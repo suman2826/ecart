@@ -59,7 +59,9 @@ users = [
 data = []
 
 users.each do |user_data|
-  data << user_data.merge!(password: 'mindfire', created_at: Time.now, updated_at: Time.now)
+  data << user_data.merge!(password: 'mindfire',password_confirmation: 'mindfire', created_at: Time.now, updated_at: Time.now)
 end
 
-User.upsert_all(data)
+data.each do |datum|
+    User.create(datum)
+  end
