@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  devise_for :users
+  # devise_for :users
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 
   # api/categories
@@ -7,6 +7,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     resources :sessions, only: [:create]
+    resources :users, only: [:create]
     
     resources :categories, only: [:index] do
       resources :products, only: [:index, :show]

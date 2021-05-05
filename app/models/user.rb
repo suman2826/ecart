@@ -1,4 +1,7 @@
 class User < ApplicationRecord
+
+  InvalidToken = Class.new(StandardError)
+  ExpiredToken = Class.new(StandardError)
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable
@@ -9,16 +12,16 @@ class User < ApplicationRecord
   has_many :orders
   has_many :order_items, through: :orders
   
-  # after_create :create_cart
+  after_create :create_cart
 
-  # def creation_of_cart
-  #   return if cart_exists?
-  #   create_cart
-  # end
+  validates :email, uniqueness: true, presence: true
 
-  # def cart_exists?
-  #   cart.present?
-  # end
+  def generate_token!
+    return token if token.present?
+    token = SecureRandom.urlsafe_base64(100)
+    self.update(token: token, token_created_at: Time.now)
+    token
+  end
 
   def create_order!
     cart_items = self.cart_items.includes(:product)
@@ -40,5 +43,17 @@ class User < ApplicationRecord
       cart_item.destroy
     end
     return order
+  end
+
+  class << self
+    def validate_token!(token)
+      raise InvalidToken if token.blank?
+      user = self.where(token: token).first
+      raise InvalidToken if user.blank?
+      if (Time.now - user.token_created_at) > 5.hours
+        raise ExpiredToken
+      end
+      user
+    end
   end
 end

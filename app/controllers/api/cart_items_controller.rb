@@ -1,6 +1,6 @@
 module Api
     class CartItemsController < ApplicationController
-      before_action :set_cart
+      # before_action :set_cart
       before_action :fetch_cart_item, only: [:update, :destroy, :show]
       before_action :fetch_cart_items, only: [:create, :index]
 
@@ -60,25 +60,25 @@ module Api
       end
 
       private
-      def set_cart
-        if current_user.cart
-          return 
-        else 
-          cart = Cart.create(user_id: current_user.id)
-          cart.cart_items = []
-          render json: cart.cart_items and return
-        end
-      end
+      # def set_cart
+      #   if current_user.cart
+      #     return 
+      #   else 
+      #     cart = Cart.create(user_id: current_user.id)
+      #     cart.cart_items = []
+      #     render json: cart.cart_items and return
+      #   end
+      # end
 
       def fetch_cart_item
-        @cart_item = current_user.cart_items.find params[:id]
+        @cart_item = current_user.cart.cart_items.find params[:id]
         rescue ActiveRecord::RecordNotFound
           render json: {success: false, error: "Not found"},
             status: :not_found and return
       end
 
       def fetch_cart_items
-        @cart_items = current_user.cart_items
+        @cart_items = current_user.cart.cart_items
       end
 
   end

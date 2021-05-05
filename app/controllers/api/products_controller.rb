@@ -1,6 +1,6 @@
 module Api
   class ProductsController < ApplicationController
-    skip_before_action :authenticate!
+    skip_before_action :authenticate!, except: [:show]
     before_action :fetch_category
     
     def index

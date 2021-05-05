@@ -2,7 +2,7 @@ module Api
   class ProfilesController < ApplicationController
     def show
       data = current_user.attributes.symbolize_keys
-      data.delete(:password)
+      data.delete(:encrypted_password)
       render json: data
     end
   end
