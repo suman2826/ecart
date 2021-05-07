@@ -4,8 +4,9 @@ class User < ApplicationRecord
   ExpiredToken = Class.new(StandardError)
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  devise :database_authenticatable
-  # , :registerable, :recoverable, :rememberable, :validatable
+  devise :database_authenticatable, :confirmable,
+    :registerable, :recoverable, :rememberable, :validatable
+  
   has_one :cart
   has_many :cart_items, through: :cart
 

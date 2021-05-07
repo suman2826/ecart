@@ -7,6 +7,8 @@ module Api
                 email:params[:email],
                 password:params[:password]
             )
+            
+            # binding.pry
             if user.save
                 render json:{
                     status:"User created",

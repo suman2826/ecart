@@ -4,7 +4,18 @@ module Api
     before_action :fetch_category
     
     def index
-      products = @category.products
+      product_name = params[:name]
+      if product_name.blank?
+        products = @category.products.paginate(page: params[:page],per_page: 4)
+      else
+        product_name.insert(0,'%')
+        product_name << '%'
+        products = Product.where("name like ?",product_name).paginate(page: params[:page],per_page: 4)
+        if products.blank?
+          products = @category.products.paginate(page: params[:page],per_page: 4)
+        end
+      end
+      binding.pry
       render json: products
     end
 

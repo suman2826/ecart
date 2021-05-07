@@ -8,18 +8,22 @@ module Api
       ).first
 
       return unauthorized! if user.blank?
+      if user.confirmed?
 
-      if user.valid_password?(params[:password])
-        token = user.generate_token!
+        if user.valid_password?(params[:password])
+          token = encode_token({id: user.id})
 
-        render json: {user: {
-                        id: user.id,
-                        email: user.email,
-                        name: user.name,
-                        token: token
-                      }}
+          render json: {user: {
+                          id: user.id,
+                          email: user.email,
+                          name: user.name,
+                          token: token
+                        }}
+        else
+          unauthorized!
+        end
       else
-        unauthorized!
+        render json: {status: "Please confirm you email first!!"}
       end
     end
 
